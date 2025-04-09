@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script src="lib/cuon-matrix-cse160.js"></script>
+
+    <title>Draw a blue rectangle (canvas version)</title>
+  </head>
+
+  <body onload="main()">
+    <canvas id="webgl" width="400" height="400">
+    Please use a browser that supports "canvas"
+    </canvas>
+
+    <div class="preference">
+      <div class="vecdata">
+        Vector 1: <br> 
+        <label for="v1x"> x: </label>
+        <input
+            type="number"
+            id="v1x"
+            name="v1x"
+            required />
+          
+        <label for="v1y"> y: </label>
+        <input
+            type="number"
+            id="v1y"
+            name="v1y"
+            required />
+      </div>
+      <div class="vecdata">
+        Vector 2: <br>
+        <label for="v2x"> x: </label>
+        <input
+            type="number"
+            id="v2x"
+            name="v2x"
+            required />
+
+        <label for="v2y"> y: </label>
+        <input
+            type="number"
+            id="v2y"
+            name="v2y"
+            required />
+      </div>
+      <input type="button" value="Draw" id="DrawVec"/>
+    
+      <div class="opdata">
+        <label for="op-select">Operation:</label>
+
+        <select name="ops" id="op-select">
+          <option value="">--Select Operation--</option>
+          <option value="add">Add</option>
+          <option value="sub">Subtract</option>
+          <option value="div">Divide</option>
+          <option value="mul">Multiply</option>
+          <option value="mag">Magnitude</option>
+          <option value="nor">Normalize</option>
+          <option value="ang">Angle Between</option>
+          <option value="are">Area</option>
+        </select>
+
+        <label for="scalar"> scalar: </label>
+        <input
+            type="number"
+            id="scalar"
+            name="scalar"
+            required />
+      </div>
+      <input type="button" value="Draw" id="DrawOp"/>
+    </div>
+
+    <script src="asg0.js"></script>
+  </body>
+</html>
