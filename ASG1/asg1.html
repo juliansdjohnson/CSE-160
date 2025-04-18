@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Paint Program</title>
+    
+    <script src="../lib/webgl-utils.js"></script>
+    <script src="../lib/webgl-debug.js"></script>
+    <script src="../lib/cuon-utils.js"></script>
+    <script src="../lib/cuon-matrix-cse160.js"></script>
+    <script src="../lib/brush.js"></script>
+    <script src="../lib/shapes.js"></script>
+    <script src="asg1.js"></script>
+  </head>
+
+<body onload="main()">
+
+  <canvas id="webgl" width="400" height="400">
+  Please use the browser supporting "canvas"
+  </canvas>
+
+  <br>
+  <!-- Clear Canvas -->
+  <input type="button" value="clear canvas" id="clr"/>
+
+  <br>
+  <!-- DROPDOWN! -->
+  <select name="shape" id="shape" />
+    <option value="triangle">triangles</option>
+    <option value="point">squares</option>
+    <option value="circle">circles</option>
+  </select>
+  <!-- Color picker -->
+
+  <div>
+    <input type="color" id="color" name="color" value="#FFFFFF" />
+    <label for="color">color</label>
+  </div>
+
+  <!-- Size slider -->
+  <div>
+    <input 
+      type="range"
+      id="size" 
+      name="size" 
+      min="0"
+      max="100"
+      value="1" />
+    <label for="size">size</label>
+  </div>
+
+  <!-- conditional circle thing -->
+  <div>
+    <input
+        type="range"
+        id="segments"
+        name="segments"
+        min=30"
+        max="100"
+        value="10"
+        step="1"/>
+    <label for="segments">circle segments</label>
+  </div>
+
+</body>
+</html>
+
