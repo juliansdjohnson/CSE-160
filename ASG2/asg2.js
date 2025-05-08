@@ -4,24 +4,36 @@
 // Vertex shader program
 var VSHADER_SOURCE =
  `attribute vec4 a_Position;
-  uniform mat4 u_ModelMatrix;
+ 	attribute vec4 a_Color;
+ 	
+ 	uniform mat4 u_GlobalRotateMatrix;
+ 	uniform mat4 u_ModelMatrix;
+ 	
+ 	varying vec4 v_Color;
+ 	
   void main() {
-    gl_Position = u_ModelMatrix * a_Position;
+    gl_Position = u_GlobalRotateMatrix * u_ModelMatrix * a_Position;
+    
+    v_Color = a_Color;
   }`
 
 // Fragment shader program
 var FSHADER_SOURCE =
  `precision mediump float;
-  uniform vec4 u_FragColor;
+ 	
+ 	varying vec4 v_Color;
+ 
   void main() {
-    gl_FragColor = u_FragColor;
+    gl_FragColor = v_Color;
   }`
 
 // GLOBALS!
 let canvas;
 let gl;
 let a_Position;
-let u_Fragcolor;
+
+let a_Color;
+
 let u_ModelMatrix;
 let u_GlobalRotateMatrix;
 
@@ -48,6 +60,8 @@ function main() {
   gl.clear(gl.COLOR_BUFFER_BIT);
   addActionsForHtmlUI();
   
+  
+  
   let fish = makeAnimal();
   let swim = makeSwim(fish);
   
@@ -56,7 +70,7 @@ function main() {
   g_managers.push( FishManager );
   
   FishManager.connectToDOM();
-    
+  
   requestAnimationFrame( tick );
   
 }
@@ -100,11 +114,17 @@ function connectVariablesToGLSL() {
     return;
   }
 
-  // Get the storage location of u_FragColor
-  u_FragColor = gl.getUniformLocation(gl.program, 'u_FragColor');
-  if (!u_FragColor) {
-    console.log('Failed to get the storage location of u_FragColor');
+  // Get the storage location of a_Color
+  a_Color = gl.getAttribLocation(gl.program, 'a_Color');
+  if (!a_Color) {
+    console.log('Failed to get the storage location of a_Color');
     return;
+  }
+
+  u_GlobalRotateMatrix = gl.getUniformLocation(gl.program, 'u_GlobalRotateMatrix');
+  if (!u_GlobalRotateMatrix) {
+  	console.log('Failed to get the storage location of u_ModelMatrix');
+  	return;
   }
 
   u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
@@ -112,9 +132,11 @@ function connectVariablesToGLSL() {
   	console.log('Failed to get the storage location of u_ModelMatrix');
   	return;
   }
-    
+
   var identityM = new Matrix4();
   gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
+  
+  
 }
 
 // adds each element to UI and returns an object with their default values
@@ -125,7 +147,6 @@ function addActionsForHtmlUI(){
 	let camera_angle = document.getElementById("CamAngle");
 	camera_angle.addEventListener('mousemove', function() {
 		g_globalAngle = camera_angle.value;
-		renderAllShapes(g_managers);
 	})
 	g_globalAngle = camera_angle.value;
 
@@ -146,12 +167,16 @@ function renderAllShapes(managers){
   // Clear <canvas>
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	
-
-	let global_rotate_matrix = new Matrix4();
-	global_rotate_matrix.rotate(g_globalAngle, 0, 1, 0);
+	
+	// set the global matrix
+	global_rotate_matrix = new Matrix4().rotate(g_globalAngle, 0, 1, 0);
+	u_GlobalRotateMatrix 
+	u_GlobalRotateMatrix
+	
+	gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, global_rotate_matrix.elements);
 	
 	managers.forEach((element) => {
-		element.animal.render(global_rotate_matrix)
+		element.animal.render(new Matrix4())
 		element.updateDOM();
 	});
 	

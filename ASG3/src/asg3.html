@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Blocky Animal</title>
+    
+    <script type="module" src="../lib/cuon-utils.js"></src>
+		<script type="module" src="../lib/cuon-matrix-cse160.js"></script>
+		<script type="module" src="../lib/triangle3d.js"></script>
+		<script type="module" src="../lib/Cube.js"></script>
+    <script type="module" src="asg3.js"></script>
+    
+    <style>
+			{
+					box-sizing: border-box;
+			}
+			/* Set additional styling options for the columns*/
+			.column {
+			float: left;
+			width: 50%;
+			}
+		
+			.setwidth {
+			min-width: 850px;
+			
+			}
+		
+			.row:after {
+			content: "";
+			display: table;
+			clear: both;
+			}
+    </style>
+
+  </head>
+
+<body>
+
+	<div class="row">
+	<div class="column setwidth">
+  	<canvas id="webgl" width="800" height="800">
+  	Please use the browser supporting "canvas"
+  	</canvas>
+  	<div id="perf"></div>
+  	<br>
+		<!-- Rotation Slider -->
+		<div>
+			<input 
+				type="range"
+				id="CamAngle" 
+				name="Camera Angle" 
+				min="0"
+				max="365"
+				value="0" />
+			<label for="CamAngle">Camera Angle</label>
+		</div>
+	</div>
+  
+  <div class="columm">
+		<div id="dummy">
+		</div>
+	</div>
+
+	</div>
+</body>
+</html>
+
