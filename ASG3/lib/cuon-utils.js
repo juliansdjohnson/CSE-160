@@ -26,7 +26,7 @@ export function initShaders(gl, vshader, fshader) {
  * @param fshader a fragment shader program (string)
  * @return created program object, or null if the creation has failed
  */
-function createProgram(gl, vshader, fshader) {
+export function createProgram(gl, vshader, fshader) {
   // Create shader object
   var vertexShader = loadShader(gl, gl.VERTEX_SHADER, vshader);
   var fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fshader);

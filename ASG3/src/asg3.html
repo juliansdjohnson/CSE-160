@@ -2,14 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Blocky Animal</title>
+    <title>Chicken Jockey</title>
     
-    <script type="module" src="../lib/cuon-utils.js"></src>
+    <script type="module" src="./asg3.js"></script>
+    <script type="module" src="../lib/cuon-utils.js"></script>
 		<script type="module" src="../lib/cuon-matrix-cse160.js"></script>
 		<script type="module" src="../lib/triangle3d.js"></script>
 		<script type="module" src="../lib/Cube.js"></script>
-    <script type="module" src="asg3.js"></script>
-    
+    <script type="module" src="../lib/chunk.js"></script>
+    <script type="module" src="../lib/collisionbox.js"></script>
+    <script type="module" src="../lib/Context.js"></script>
+    <script type="module" src="../lib/player.js"></script>
+    <script type="module" src="../lib/shaders.js"></script>
+    <script type="module" src="../lib/textures.js"></script>
+    <script type="module" src="../lib/world.js"></script>
+		<script type="module" src="../lib/node_modules/simplex-noise/dist/esm/simplex-noise.js"></script>
+		<script type="module" src="../lib/skybox.js"></script>
+
+
     <style>
 			{
 					box-sizing: border-box;
@@ -43,17 +53,7 @@
   	</canvas>
   	<div id="perf"></div>
   	<br>
-		<!-- Rotation Slider -->
-		<div>
-			<input 
-				type="range"
-				id="CamAngle" 
-				name="Camera Angle" 
-				min="0"
-				max="365"
-				value="0" />
-			<label for="CamAngle">Camera Angle</label>
-		</div>
+  	<div id="debugInfo"></div>
 	</div>
   
   <div class="columm">

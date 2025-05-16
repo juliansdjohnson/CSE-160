@@ -38,6 +38,23 @@ export class Vector3 {
 
         return this;
     }
+    
+    setList(src) {
+    	var i, s, d;
+    	
+    	s = [...src]
+    	d = this.elements;
+    	
+    	if (s === d) {
+    		return;
+    	}
+    	
+    	for (i = 0; i < 3; ++i) {
+    		d[i] = s[i];
+    	}
+    	
+    	return this;
+    }
 
     /**
       * Add other to this vector.
@@ -146,6 +163,15 @@ export class Vector3 {
         // Don't delete the return statement.
         return m;
     };
+    
+    magnitude_squared() {
+    	let m = this.elements[0] * this.elements[0]
+    				+ this.elements[1] * this.elements[1]
+    				+ this.elements[2] * this.elements[2];
+    	
+    	return m;
+    
+    }
 
     /**
       * Normalize this vector.
@@ -170,6 +196,14 @@ export class Vector3 {
     	this.elements[2] = Math.min(this.elements[2], peak);
     	this.elements[2] = Math.max(this.elements[2], -peak);
 
+    	return this;
+    }
+    
+    floor() {
+    	this.elements[0] = Math.floor(this.elements[0]);
+    	this.elements[1] = Math.floor(this.elements[1]);
+    	this.elements[2] = Math.floor(this.elements[2]);
+    	
     	return this;
     }
 

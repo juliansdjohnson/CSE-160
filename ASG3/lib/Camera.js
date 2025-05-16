@@ -1,12 +1,17 @@
 import { Matrix4, Vector3 } from "../lib/cuon-matrix-cse160.js";
 
-export default class Camera {
-  constructor(gl, position = [0, 1, 2], target = [0, 0, 0]) {
-    this.position = new Vector3(position);
-    this.target = new Vector3(target);
+// shamelessly and unethically adapted from lab3,
+// takes a context, a position and a target, calculates a projection matrix
+// a la cuon-matrix
+export class Camera {
+  constructor(gl, pos = [0, 1, 2], tar = [0, 0, 0]) {
+
+    this.position = new Vector3(pos);
+    this.target = new Vector3(tar);
     
-    let tmp = new Vector3().set(target);
-    tmp.sub(position);
+    
+    let tmp = new Vector3().set(this.target);
+    tmp.sub(this.position);
     this.radius = Math.sqrt(Vector3.dot(tmp, tmp));
     
     this.viewMatrix = new Matrix4();
@@ -31,6 +36,6 @@ export default class Camera {
       ...this.up.elements
     );
 
-    this.projectionMatrix.setPerspective(90, this.aspect, 0.01, 10);
+    this.projectionMatrix.setPerspective(90, this.aspect, 0.01, 30);
   }
 }

@@ -1,93 +1,61 @@
 
-import Cube from "../lib/Cube.js";
-import Camera from "../lib/Camera.js";
-import getContext from "../lib/Context.js";
-import RotateControls from "../lib/Controls.js";
-// "imports," I feel like they belong up here, even though they don't
-const uvImg = "../lib/img/uvCoords.png";
-const diceImg = "../lib/img/dice.png";
-
+import { Cube } from "../lib/Cube.js";
+import { Camera } from "../lib/Camera.js";
+import { Block } from "../lib/block.js"
+import { getContext } from "../lib/Context.js";
+import { World } from "../lib/world.js";
+import { SkyBox } from "../lib/skybox.js";
 
 import { Matrix4, Vector3, Vector4 } from "../lib/cuon-matrix-cse160.js";
 import { initShaders, getWebGLContext } from "../lib/cuon-utils.js";
 
-// ColoredPoint.js (c) 2012 matsuda
-// Vertex shader program
-var VSHADER_SOURCE =
- `uniform mat4 u_ProjectionMatrix;
- 	uniform mat4 u_ModelMatrix;
-	uniform mat4 u_ViewMatrix;
- 
- 	attribute vec4 a_Position;
- 	attribute vec4 a_Color;
- 	
- 	attribute vec2 a_UV;
- 	varying vec2 v_UV;
- 	 	
- 	varying vec4 v_Color;
- 	
-  void main() {
-    gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * a_Position;
-    
-    v_UV = a_UV;
-  }`
+// "imports," I feel like they belong up here, even though they don't
+const g_textures = [
+							 			 "../lib/img/grass.png",
+							 			 "../lib/img/stone.png"
+							 		 ]
 
-// Fragment shader program
-var FSHADER_SOURCE =
- `precision mediump float;
- 	
- 	uniform sampler2D u_Texture0;
- 	uniform sampler2D u_Texture1;
- 	
- 	varying vec2 v_UV;
- 	varying vec4 v_Color;
- 
-  void main() {
-  	vec4 image0 = texture2D(u_Texture0, v_UV);
-    vec4 image1 = texture2D(u_Texture1, v_UV);
-    
-    gl_FragColor = image0;
-  }`
 
 // Various initialization
-const gl = getContext();
+let gl;
 window.addEventListener('DOMContentLoaded', main, false);
 
 
 // Shader variables //
 
+let g_startTime;
 let g_time;
 let g_seconds;
 
+let g_world;
+let g_texture0;
+let g_texture1;
+let imagestoload = 2;
+
 // end shader variables //
 
-let camera;
-let cubes;
-let controls;
 
 function main() {
   
-  if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
-  	console.log("Failed to initialize shaders.");
-  }
-  
-  camera = new Camera(gl);
-  cubes = []
-  cubes.push( new Cube(null, null, null));
-  
-  for (let c in cubes) {
-  	cubes[c].setImage(gl, uvImg, 0);
-  	cubes[c].setImage(gl, diceImg, 1);
-	}
-
-	var controls = [];
-	for (let c in cubes) {
-		controls.push(new RotateControls(gl, cubes[c]))
-	}
-  
-  g_time = performance.now()/1000.0
-  
-//   connectVariablesToGLSL();
+  g_startTime = performance.now()/1000.0
+	
+	gl = getContext();  
+		
+	// set up camera
+	// set up controls.
+	
+	buildTextures(gl);
+	
+	let sky = new SkyBox(gl);
+	
+	let c = new Camera(gl, [0, 1, 2], [0, 0, 0]);	
+	
+	let chunk_size = new Vector3([16, 16, 16]);
+	
+	let world_options = { draw_distance : 1 }
+	let gen_options = { sea_level : 3, dynamic_range: 20 }
+	
+	g_world = new World(chunk_size, gl, c, sky, world_options, gen_options);
 	
   // Specify the color for clearing <canvas>
   let bg_color = new Vector4(hexToRgb("12090e")).div(255);
@@ -96,49 +64,58 @@ function main() {
 
   // clear canvas
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-//   addActionsForHtmlUI();
+	//   addActionsForHtmlUI();
     
-  requestAnimationFrame( tick );
-  
+    
+  g_world.update();
 }
+
 
 // TODO: tick Animation
 function tick() {
 		
 		
+	g_seconds = performance.now()/1000.0 - g_startTime;
+	let startTime = performance.now()/1000.0;
+	
+	
 	let time = performance.now()/1000.0;
 	let delta_time = time - g_time;
 	g_time = time;
 	
 	delta_time *= 0.01;
-	
-	for (let c in controls) {
-    if (!controls[c].dragging) {
-      controls[c].lerpRotation.elements[1] += delta_time;
-    }
-  }
+
+
+	g_world.update();
+
+
+
+// 	g_world.update();
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   
-  for (let c in controls) {
-    controls[c].update();
-  }
-  for (let c in cubes) {
-    cubes[c].render(gl, camera);
-  }
-	
+  renderAllShapes();  
+  
+  
+	// render everything.
+
 	requestAnimationFrame(tick);
+
+
+
+
+
+
+	let duration = performance.now() / 1000.0 - startTime;
+	sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(10000/duration)/10, "perf")
 
 }
 
 
-function renderAllShapes(managers){
+function renderAllShapes(){
 
-
-	g_seconds = performance.now()/1000.0 - g_startTime;
 
 	let startTime= performance.now();
-
 
 	gl.enable(gl.CULL_FACE);
 	gl.enable(gl.DEPTH_TEST);
@@ -146,60 +123,22 @@ function renderAllShapes(managers){
   // Clear <canvas>
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	
+	g_world.render();
 	
 	
-	let duration = performance.now() - startTime;
-	sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(10000/duration)/10, "perf")
+// 	for (let b of g_blocks) {
+// 		for (let dir of ["+z", "-z", "+x", "-x", "+y", "-y"]) {
+// 			g_faces.push(b.giveFace(dir));
+// 		}
+// 	}
+// 	g_faces.forEach( (element) => element.render(gl, g_camera) )
+	
+	
+	
+	
 
 }
 
-
-function connectVariablesToGLSL() {
-  // Initialize shaders
-  if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
-    console.log('Failed to initialize shaders.');
-    return;
-  }
-
-  // Get the storage location of a_Position
-  a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-  if (a_Position < 0) {
-    console.log('Failed to get the storage location of a_Position');
-    return;
-  }
-
-  // Get the storage location of a_Color
-  a_Color = gl.getAttribLocation(gl.program, 'a_Color');
-  if (!a_Color) {
-    console.log('Failed to get the storage location of a_Color');
-    return;
-  }
-  
-  // Get the storage location of a_Color
-  a_UV = gl.getAttribLocation(gl.program, 'a_UV');
-  if (!a_UV) {
-    console.log('Failed to get the storage location of a_UV');
-    return;
-  }
-
-
-  u_GlobalRotateMatrix = gl.getUniformLocation(gl.program, 'u_GlobalRotateMatrix');
-  if (!u_GlobalRotateMatrix) {
-  	console.log('Failed to get the storage location of u_ModelMatrix');
-  	return;
-  }
-
-  u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
-  if (!u_ModelMatrix) {
-  	console.log('Failed to get the storage location of u_ModelMatrix');
-  	return;
-  }
-
-  var identityM = new Matrix4();
-  gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
-  
-  
-}
 
 // // adds each element to UI and returns an object with their default values
 // function addActionsForHtmlUI(){
@@ -216,6 +155,90 @@ function connectVariablesToGLSL() {
 
 // **** HELPER FUNCTIONS ****
 
+
+
+// builds textures from a dictionary of "type," "pathway"
+// returns a dictionary of "type", texture numbers.
+// this function is not dynamic.
+function buildTextures(gl) {
+
+		g_texture0 = gl.createTexture();
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+
+		const u_Texture0 = gl.getUniformLocation(gl.program, "u_Texture0");
+		if (u_Texture0 < 0) console.error("Could not get uniform");
+
+		const img0 = new Image();
+		img0.onload = () => {
+			gl.activeTexture(gl.TEXTURE0);
+			gl.bindTexture(gl.TEXTURE_2D, g_texture0);
+			
+			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
+
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+			gl.texImage2D(
+				gl.TEXTURE_2D,
+				0,
+				gl.RGBA,
+				gl.RGBA,
+				gl.UNSIGNED_BYTE,
+				img0
+			);
+			console.log("loaded grass");
+			onImgLoad();
+		};
+		
+		gl.uniform1i(u_Texture0, 0);
+		
+		img0.crossOrigin = "anonymous";
+		img0.src = g_textures[0];
+		
+		
+		
+		g_texture1 = gl.createTexture();
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+
+		const u_Texture1 = gl.getUniformLocation(gl.program, "u_Texture1");
+		if (u_Texture1 < 0) console.error("Could not get uniform");
+
+		const img1 = new Image();
+		img1.onload = () => {
+			gl.activeTexture(gl.TEXTURE1);
+			gl.bindTexture(gl.TEXTURE_2D, g_texture1);
+			
+			gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+			gl.texImage2D(
+				gl.TEXTURE_2D,
+				0,
+				gl.RGBA,
+				gl.RGBA,
+				gl.UNSIGNED_BYTE,
+				img1
+			);
+			console.log("loaded stone");
+			onImgLoad();
+		};
+		
+		gl.uniform1i(u_Texture1, 1);
+		
+		img1.crossOrigin = "anonymous";
+		img1.src = g_textures[1];
+		
+}
+
+function onImgLoad () {
+	--imagestoload;
+	
+	if (imagestoload === 0) {
+		  requestAnimationFrame( tick );
+	}
+
+}
 
 function convertCoordinatesEventToGL(ev) {
   var x = ev.clientX; // x coord of mouse pointer
