@@ -1,5 +1,5 @@
 import { Vector3, Matrix4 } from "./cuon-matrix-cse160.js";
-import { Cube } from "./cube.js";
+import { Cube } from "./Cube.js";
 import { AABB } from "./collisionbox.js";
 
 export class Block {
