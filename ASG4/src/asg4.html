@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Phong</title>
+    
+    <script type="module" src="./asg4.js"></script>
+    <script type="module" src="../lib/cuon-utils.js"></script>
+		<script type="module" src="../lib/cuon-matrix-cse160.js"></script>
+		<script type="module" src="../lib/webgl-debug.js"></script>
+		<script type="module" src="../lib/webgl-utils.js"></script>
+
+		<script type="module" src="../lib/misc-util.js"></script>
+		<script type="module" src="../lib/camera.js"></script>
+		<script type="module" src="../lib/context.js"></script>
+		<script type="module" src="../lib/cube.js"></script>
+		<script type="module" src="../lib/controls.js"></script>
+		<script type="module" src="../lib/sphere.js"></script>
+		<script type="module" src="../lib/light.js"></script>
+		
+
+
+    <style>
+			{
+					box-sizing: border-box;
+			}
+			/* Set additional styling options for the columns*/
+			.column {
+			float: left;
+			width: 50%;
+			}
+		
+			.setwidth {
+			min-width: 850px;
+			
+			}
+		
+			.row:after {
+			content: "";
+			display: table;
+			clear: both;
+			}
+    </style>
+
+  </head>
+
+<body>
+
+	<div class="row">
+	
+	<div class="column setwidth">
+  	<canvas id="webgl" width="800" height="800">
+  	Please use the browser supporting "canvas"
+  	</canvas>
+  	<div id="perf"></div>
+  	<br>
+  	<div id="debugInfo"></div>
+	</div>
+  
+  <div>
+  	Rendering mode:
+		<select name="mode" id="mode">
+			<option value="lit">lit</option>
+			<option value="unlit">unlit</option>
+			<option value="normal">normal</option>
+		</select>
+  </div>
+  <br>
+  
+  
+  <div class="columm">
+		<div id="controls">
+		</div>
+	</div>
+
+	</div>
+</body>
+</html>
+

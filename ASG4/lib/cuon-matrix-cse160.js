@@ -5,8 +5,8 @@
  * The matrix after conversion is calculated by multiplying a conversion matrix from the right.
  * The matrix is replaced by the calculated result.
  */
-
-class Vector3 {
+ 
+export class Vector3 {
     constructor(opt_src) {
         var v = new Float32Array(3);
         if (opt_src && typeof opt_src === 'object') {
@@ -37,6 +37,23 @@ class Vector3 {
         }
 
         return this;
+    }
+    
+    setList(src) {
+    	var i, s, d;
+    	
+    	s = [...src]
+    	d = this.elements;
+    	
+    	if (s === d) {
+    		return;
+    	}
+    	
+    	for (i = 0; i < 3; ++i) {
+    		d[i] = s[i];
+    	}
+    	
+    	return this;
     }
 
     /**
@@ -100,6 +117,15 @@ class Vector3 {
         // Don't delete the return statement.
         return this;
     };
+    
+    pow(power) {
+    
+    	this.elements[0] = Math.pow(this.elements[0], power);
+			this.elements[1] = Math.pow(this.elements[0], power);
+    	this.elements[2] = Math.pow(this.elements[0], power);
+
+    
+    }
 
     /**
       * Calcualte the dop product between this vector and other.
@@ -108,7 +134,7 @@ class Vector3 {
     static dot(other1, other2) {
         // Insert your code here.
         let d = other1.elements[0] * other2.elements[0]
-              + other1.elements[1] * other2.elements[1];
+              + other1.elements[1] * other2.elements[1]
               + other1.elements[2] * other2.elements[2];
       // Modify this line to calculate this vector's magnitude.
 
@@ -125,9 +151,9 @@ class Vector3 {
         // This function should create and return a new vector.
         let v3 = new Vector3(); // Modify this line to calculate cross product between other1 and other2.
 
-        v3.elements[0] = other1.elements[1] * other2.elements[2] - other1.elements[2] * other2.elements[1];
-        v3.elements[1] = other1.elements[0] * other2.elements[2] - other1.elements[2] * other2.elements[0];
-        v3.elements[2] = other1.elements[0] * other2.elements[1] - other1.elements[1] * other2.elements[0];
+        v3.elements[0] =   other1.elements[1] * other2.elements[2] - other1.elements[2] * other2.elements[1];
+        v3.elements[1] = - other1.elements[0] * other2.elements[2] + other1.elements[2] * other2.elements[0];
+        v3.elements[2] =   other1.elements[0] * other2.elements[1] - other1.elements[1] * other2.elements[0];
 
         // Don't delete the return statement.
         return v3;
@@ -146,6 +172,15 @@ class Vector3 {
         // Don't delete the return statement.
         return m;
     };
+    
+    magnitude_squared() {
+    	let m = this.elements[0] * this.elements[0]
+    				+ this.elements[1] * this.elements[1]
+    				+ this.elements[2] * this.elements[2];
+    	
+    	return m;
+    
+    }
 
     /**
       * Normalize this vector.
@@ -159,13 +194,34 @@ class Vector3 {
         // Don't delete the return statement.
         return this;
     };
+    
+    cap(peak) {
+    	this.elements[0] = Math.min(this.elements[0], peak);
+    	this.elements[0] = Math.max(this.elements[0], -peak);
+
+    	this.elements[1] = Math.min(this.elements[1], peak);
+    	this.elements[1] = Math.max(this.elements[1], -peak);
+
+    	this.elements[2] = Math.min(this.elements[2], peak);
+    	this.elements[2] = Math.max(this.elements[2], -peak);
+
+    	return this;
+    }
+    
+    floor() {
+    	this.elements[0] = Math.floor(this.elements[0]);
+    	this.elements[1] = Math.floor(this.elements[1]);
+    	this.elements[2] = Math.floor(this.elements[2]);
+    	
+    	return this;
+    }
 
     giveList() {
       return [this.elements[0], this.elements[1], this.elements[2]];
     }
 }
 
-class Vector4 {
+export class Vector4 {
     /**
      * Constructor of Vector4
      * If opt_src is specified, new vector is initialized by opt_src.
@@ -277,7 +333,7 @@ class Vector4 {
     static dot(other1, other2) {
         // Insert your code here.
         let d = other1.elements[0] * other2.elements[0]
-              + other1.elements[1] * other2.elements[1]
+              + other1.elements[1] * other2.elements[1];
               + other1.elements[2] * other2.elements[2];
       // Modify this line to calculate this vector's magnitude.
 
@@ -336,7 +392,7 @@ class Vector4 {
     }
 }
 
-class Matrix4 {
+export class Matrix4 {
     /**
      * Constructor of Matrix4
      * If opt_src is specified, new matrix is initialized by opt_src.
