@@ -78,7 +78,9 @@ let computer = null;
 // computer
 {
 	const loader = new GLTFLoader();
-	loader.load( '../lib/resources/computer/computer.glb', function ( gltf ) {
+	
+	
+	loader.load( '../lib/Resources/computer/computer.glb', function ( gltf ) {
 		computer = gltf.scene;
 		scene.add( gltf.scene );
 	
@@ -98,16 +100,16 @@ let flower = null;
 							 };
 
 
-	const L1 = new LSystem ( [..."X"], {'X': [...'F[+/X]F[-X]+X'], 'F': [...'FF']} )
-// 	const axiom = [..."A"]
-// 	const rules = { "A" : [..."[&FL!A]/////[&FL!A]///////[&FL!A]"],
-// 									"F" : [..."S/////F"],
-// 									"S" : [..."FL"],
-// 								}
-// 	
-// 	const L1 = new LSystem ( axiom, rules )
+// 	const L1 = new LSystem ( [..."X"], {'X': [...'F[+/X]F[-X]+X'], 'F': [...'FF']} )
+	const axiom = [..."A"]
+	const rules = { "A" : [..."[&FL!A]/////[&FL!A]///////[&FL!A]"],
+									"F" : [..."S/////F"],
+									"S" : [..."FL"],
+								}
+	
+	const L1 = new LSystem ( axiom, rules )
 	const defPlantOptions = { lsystem : L1,
-														n_iterations: 5,
+														n_iterations: 6,
 														materials: mats,
 														position : new THREE.Vector3(0, 0, 0),
 													};
