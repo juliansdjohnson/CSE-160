@@ -109,7 +109,7 @@ let flower = null;
 	
 	const L1 = new LSystem ( axiom, rules )
 	const defPlantOptions = { lsystem : L1,
-														n_iterations: 6,
+														n_iterations: 7,
 														materials: mats,
 														position : new THREE.Vector3(0, 0, 0),
 													};
